@@ -1,7 +1,13 @@
+from datetime import datetime
+from enum import Enum
+
 from pydantic import BaseModel
 
+from src.auth.shemas import UserRead
+from src.booking.models import StatusEnum
 
-class ApartmentList(BaseModel):
+
+class Apartment(BaseModel):
     id: int
     name: str
     description: str
@@ -25,5 +31,39 @@ class ApartmentCreate(BaseModel):
     max_num_of_guests: int
     storey: int
 
+
+class UserApartments(Apartment):
+    user_id: int
     # class Config:
     #     orm_mode = True
+
+
+class Status(str, Enum):
+    first = 'Ожидает оплаты'
+    second = 'Оплачена'
+    third = 'Отменена'
+
+
+class BookingRead(BaseModel):
+    id: int
+    status: StatusEnum
+    rating: str
+    start: datetime
+    end: datetime
+    price: int
+    paid_price: int
+    created_at: datetime
+    apartment_id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class BookingCreate(BaseModel):
+    status: StatusEnum
+    start: datetime
+    end: datetime
+    price: int
+    apartment_id: int
+    user_id: int
